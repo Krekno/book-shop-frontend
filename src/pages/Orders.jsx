@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
 
-export default function Orders({ role }) {
+export default function Orders({ role, api }) {
 	const [orders, setOrders] = useState([])
 
 	const endpoint =
 		role === "ROLE_ADMIN"
-			? "https://springboot-e-commerce-project-sab4.onrender.com/order/all-orders"
-			: "https://springboot-e-commerce-project-sab4.onrender.com/order/my-orders"
+			? `${api}/order/all-orders`
+			: `${api}/order/my-orders`
 
 	const token = localStorage.getItem("token")
 
@@ -34,7 +34,7 @@ export default function Orders({ role }) {
 	const handleApprove = async (orderId) => {
 		try {
 			await axios.put(
-				`https://springboot-e-commerce-project-sab4.onrender.com/order/admin/approve/${orderId}`,
+				`${api}/order/admin/approve/${orderId}`,
 				{},
 				{
 					headers: {
@@ -51,7 +51,7 @@ export default function Orders({ role }) {
 	const handleReject = async (orderId) => {
 		try {
 			await axios.put(
-				`https://springboot-e-commerce-project-sab4.onrender.com/order/admin/reject/${orderId}`,
+				`${api}/order/admin/reject/${orderId}`,
 				{},
 				{
 					headers: {

@@ -2,7 +2,7 @@ import axios from "axios"
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-const Profile = ({ setIsLoggedIn, setRole }) => {
+const Profile = ({ setIsLoggedIn, setRole, api }) => {
 	const navigate = useNavigate()
 
 	const [formData, setFormData] = useState({
@@ -28,12 +28,12 @@ const Profile = ({ setIsLoggedIn, setRole }) => {
 		}
 
 		try {
-			const response = await axios.put("https://springboot-e-commerce-project-sab4.onrender.com/user/update-profile", formData, {
+			const response = await axios.put(`${api}/user/update-profile`, formData, {
 				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
 			})
 
 			if (response.status === 200) {
-				const loginResponse = await axios.post("https://springboot-e-commerce-project-sab4.onrender.com/auth/login", {
+				const loginResponse = await axios.post(`${api}/auth/login`, {
 					email: formData.email,
 					password: formData.password
 				})

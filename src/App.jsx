@@ -14,6 +14,7 @@ import AdminPanel from "./pages/AdminPanel"
 import Orders from "./pages/Orders"
 
 function App() {
+	const api = "https://springboot-e-commerce-project-sab4.onrender.com"
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
 	const [role, setRole] = useState("")
 	const [books, setBooks] = useState([])
@@ -44,8 +45,8 @@ function App() {
 			try {
 				const endpoint =
 					role === "ROLE_ADMIN"
-						? "https://springboot-e-commerce-project-sab4.onrender.com/book/admin/get-all-book"
-						: "https://springboot-e-commerce-project-sab4.onrender.com/book/get-all-book"
+						? `${api}/book/admin/get-all-book`
+						: `${api}/book/get-all-book`
 
 				const response = await axios.get(endpoint, {
 					headers: {
@@ -75,7 +76,7 @@ function App() {
 				return
 			}
 			try {
-				const response = await axios.get("https://springboot-e-commerce-project-sab4.onrender.com/cart/get", {
+				const response = await axios.get(`${api}/cart/get`, {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem("token")}`
 					}
@@ -100,18 +101,18 @@ function App() {
 	}, [isLoggedIn])
 
 	return (
-		<CartProvider isLoggedIn={isLoggedIn} cartItems={cartItems} setCartItems={setCartItems}>
+		<CartProvider isLoggedIn={isLoggedIn} cartItems={cartItems} setCartItems={setCartItems} api={api}>
 			<Router>
 				<Navbar isLoggedIn={isLoggedIn} role={role} cartItems={cartItems} />
 				<Routes>
 					<Route path="/" element={<ProductListing books={books} categories={categories} />} />
 					<Route path="/products/:id" element={<ProductDetail books={books} />} />
-					<Route path="/cart" element={<Cart setCartItems={setCartItems} />} />
+					<Route path="/cart" element={<Cart setCartItems={setCartItems} api={api} />} />
 					<Route path="/checkout" element={<Checkout />} />
-					<Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setRole={setRole} />} />
-					<Route path="/profile" element={<Profile setIsLoggedIn={setIsLoggedIn} setRole={setRole} />}></Route>
-					<Route path="/admin" element={<AdminPanel />} />
-					<Route path="/orders" element={<Orders role={role} />} />
+					<Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setRole={setRole} api={api} />} />
+					<Route path="/profile" element={<Profile setIsLoggedIn={setIsLoggedIn} setRole={setRole} api={api} />}></Route>
+					<Route path="/admin" element={<AdminPanel api={api} />} />
+					<Route path="/orders" element={<Orders role={role} api={api} />} />
 				</Routes>
 			</Router>
 		</CartProvider>

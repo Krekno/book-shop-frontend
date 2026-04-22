@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
-function AuthPage({ setIsLoggedIn, setRole }) {
+function AuthPage({ setIsLoggedIn, setRole, api }) {
 	const [activeTab, setActiveTab] = useState("login")
 	const [loginData, setLoginData] = useState({ email: "", password: "" })
 	const [registerData, setRegisterData] = useState({ username: "", email: "", password: "", confirmPassword: "" })
@@ -19,7 +19,7 @@ function AuthPage({ setIsLoggedIn, setRole }) {
 
 		try {
 			const response = await axios.post(
-				"https://springboot-e-commerce-project-sab4.onrender.com/auth/login",
+				`${api}/auth/login`,
 				{
 					email: loginData.email,
 					password: loginData.password
@@ -52,7 +52,7 @@ function AuthPage({ setIsLoggedIn, setRole }) {
 		}
 
 		try {
-			const response = await axios.post("https://springboot-e-commerce-project.onrender.com/auth/register", {
+			const response = await axios.post(`${api}/auth/register`, {
 				username: registerData.username,
 				email: registerData.email,
 				password: registerData.password

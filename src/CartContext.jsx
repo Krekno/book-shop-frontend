@@ -4,7 +4,7 @@ import { createContext, useState } from "react"
 
 export const CartContext = createContext()
 
-export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems }) => {
+export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems, api }) => {
 	const addToCart = async (product) => {
 		if (isLoggedIn === false) {
 			alert("Please log in to add items to the cart")
@@ -13,7 +13,7 @@ export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems }) 
 
 		try {
 			await axios.post(
-				`https://springboot-e-commerce-project-sab4.onrender.com/cart/add?isbn=${product.isbn}&quantity=${1}`,
+				`${api}/cart/add?isbn=${product.isbn}&quantity=${1}`,
 				{},
 				{
 					headers: {
@@ -37,7 +37,7 @@ export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems }) 
 	const removeFromCart = async (isbn) => {
 		try {
 			await axios.post(
-				`https://springboot-e-commerce-project-sab4.onrender.com/cart/remove?isbn=${isbn}`,
+				`${api}/cart/remove?isbn=${isbn}`,
 				{},
 				{
 					headers: {

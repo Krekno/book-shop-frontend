@@ -4,7 +4,7 @@ import { CartContext } from "../CartContext"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
-const Cart = ({ setCartItems }) => {
+const Cart = ({ setCartItems, api }) => {
 	const { cartItems, removeFromCart } = useContext(CartContext)
 
 	const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
@@ -12,7 +12,7 @@ const Cart = ({ setCartItems }) => {
 	const handleOrder = async () => {
 		try {
 			const response = await axios.post(
-				"https://springboot-e-commerce-project-sab4.onrender.com/order/place",
+				`${api}/order/place`,
 				{},
 				{
 					headers: {

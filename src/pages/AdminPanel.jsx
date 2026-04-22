@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import axios from "axios"
 
-export default function AdminPanel() {
+export default function AdminPanel({ api }) {
 	const [book, setBook] = useState({
 		isbn: "",
 		title: "",
@@ -44,7 +44,7 @@ export default function AdminPanel() {
 			return
 		}
 		try {
-			const response = await axios.post("https://springboot-e-commerce-project-sab4.onrender.com/book/save-book", book, {
+			const response = await axios.post(`${api}/book/save-book`, book, {
 				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
 			})
 
@@ -77,7 +77,7 @@ export default function AdminPanel() {
 			return
 		}
 		try {
-			const response = await axios.patch(`https://springboot-e-commerce-project-sab4.onrender.com/book/update-book/${currentIsbn}`, book, {
+			const response = await axios.patch(`${api}/book/update-book/${currentIsbn}`, book, {
 				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
 			})
 
@@ -98,7 +98,7 @@ export default function AdminPanel() {
 		}
 		try {
 			const response = await axios.put(
-				`https://springboot-e-commerce-project-sab4.onrender.com/book/delete-book/${currentIsbn}`,
+				`${api}/book/delete-book/${currentIsbn}`,
 				{},
 				{
 					headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
