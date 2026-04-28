@@ -6,6 +6,7 @@ const Profile = ({ setIsLoggedIn, setRole, api }) => {
 	const navigate = useNavigate()
 
 	const [formData, setFormData] = useState({
+		username: "",
 		email: "",
 		password: ""
 	})
@@ -28,22 +29,10 @@ const Profile = ({ setIsLoggedIn, setRole, api }) => {
 		}
 
 		try {
-			const response = await axios.put(`${api}/user/update-profile`, formData, {
-				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-			})
+			const response = await axios.patch(`${api}/api/auth/update`, formData)
 
 			if (response.status === 200) {
-				const loginResponse = await axios.post(`${api}/auth/login`, {
-					email: formData.email,
-					password: formData.password
-				})
-
-				if (loginResponse.status === 200) {
-					localStorage.setItem("token", loginResponse.data.token)
-					setIsLoggedIn(true)
-					setRole(loginResponse.data.role)
-				}
-				setFormData({ email: "", password: "" })
+				setFormData({ username: "", email: "", password: "" })
 				setMessage("Credentials updated successfully!")
 			} else {
 				const error = await response.json()
@@ -54,8 +43,12 @@ const Profile = ({ setIsLoggedIn, setRole, api }) => {
 		}
 	}
 
-	const handleLogout = () => {
-		localStorage.removeItem("token")
+	const handleLogout = async () => {
+		try {
+			await axios.post(`${api}/api/auth/signout`)
+		} catch (error) {
+			console.error("Error signing out:", error)
+		}
 		setIsLoggedIn(false)
 		setRole("")
 		navigate("/login")
@@ -67,6 +60,20 @@ const Profile = ({ setIsLoggedIn, setRole, api }) => {
 				<div className="card-body">
 					<h3 className="card-title text-center mb-4">Update Your Info</h3>
 					<form onSubmit={handleSubmit}>
+						<div className="mb-3">
+							<label htmlFor="username" className="form-label">
+								New Username
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								id="username"
+								name="username"
+								value={formData.username}
+								onChange={handleChange}
+								placeholder="Enter new username"
+							/>
+						</div>
 						<div className="mb-3">
 							<label htmlFor="email" className="form-label">
 								New Email

@@ -12,13 +12,7 @@ const Cart = ({ setCartItems, api }) => {
 	const handleOrder = async () => {
 		try {
 			const response = await axios.post(
-				`${api}/order/place`,
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`
-					}
-				}
+				`${api}/api/order/place`
 			)
 			alert("Order successful! Thank you for your purchase.")
 			setCartItems([])

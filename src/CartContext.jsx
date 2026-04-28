@@ -12,15 +12,7 @@ export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems, ap
 		}
 
 		try {
-			await axios.post(
-				`${api}/cart/add?isbn=${product.isbn}&quantity=${1}`,
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`
-					}
-				}
-			)
+			await axios.post(`${api}/api/cart/add/${product.isbn}`)
 		} catch (error) {
 			alert("Error adding to cart")
 			console.error("Error adding to cart:", error)
@@ -36,15 +28,7 @@ export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems, ap
 
 	const removeFromCart = async (isbn) => {
 		try {
-			await axios.post(
-				`${api}/cart/remove?isbn=${isbn}`,
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`
-					}
-				}
-			)
+			await axios.put(`${api}/api/cart/remove/${isbn}`)
 			setCartItems(
 				cartItems.map((item) => (item.isbn === isbn ? { ...item, quantity: item.quantity - 1 } : item)).filter((item) => item.quantity > 0)
 			)

@@ -14,7 +14,7 @@ import AdminPanel from "./pages/AdminPanel"
 import Orders from "./pages/Orders"
 
 function App() {
-	const api = "https://springboot-e-commerce-project-sab4.onrender.com"
+	const api = "http://localhost:8080"
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
 	const [role, setRole] = useState("")
 	const [books, setBooks] = useState([])
@@ -23,21 +23,22 @@ function App() {
 	const [roleLoaded, setRoleLoaded] = useState(false)
 
 	useEffect(() => {
-		if (localStorage.getItem("token")) {
-			setIsLoggedIn(true)
-			const token = localStorage.getItem("token")
-
+		const checkSession = async () => {
 			try {
-				const decodedToken = JSON.parse(atob(token.split(".")[1]))
-				setRole(decodedToken.role)
+				const response = await axios.get(`${api}/api/auth/me`)
+				if (response.status === 200) {
+					setIsLoggedIn(true)
+					const userRoles = response.data.roles || []
+					setRole(userRoles.includes("ROLE_ADMIN") ? "ROLE_ADMIN" : userRoles[0] || "")
+				}
 			} catch (error) {
-				console.error("Invalid token format:", error)
 				setIsLoggedIn(false)
 				setRole("")
-				localStorage.removeItem("token")
+			} finally {
+				setRoleLoaded(true)
 			}
 		}
-		setRoleLoaded(true)
+		checkSession()
 	}, [])
 
 	useEffect(() => {
@@ -45,14 +46,10 @@ function App() {
 			try {
 				const endpoint =
 					role === "ROLE_ADMIN"
-						? `${api}/book/admin/get-all-book`
-						: `${api}/book/get-all-book`
+						? `${api}/api/books/all/admin`
+						: `${api}/api/books/all`
 
-				const response = await axios.get(endpoint, {
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`
-					}
-				})
+				const response = await axios.get(endpoint)
 
 				const data = response.data
 				setBooks(data)
@@ -76,11 +73,7 @@ function App() {
 				return
 			}
 			try {
-				const response = await axios.get(`${api}/cart/get`, {
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`
-					}
-				})
+				const response = await axios.get(`${api}/api/cart/getCart`)
 
 				const data = response.data
 				const books = data.map((item) => ({

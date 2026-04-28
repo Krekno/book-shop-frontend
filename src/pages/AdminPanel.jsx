@@ -3,15 +3,18 @@ import axios from "axios"
 
 export default function AdminPanel({ api }) {
 	const [book, setBook] = useState({
-		isbn: "",
-		title: "",
+		name: "",
 		author: "",
-		category: "",
-		quantity: "",
+		genre: "",
 		description: "",
+		image: "",
+		isbn: "",
 		publisher: "",
+		language: "",
+		year: "",
+		pages: "",
 		price: "",
-		image: ""
+		stock: ""
 	})
 
 	const [currentIsbn, setCurrentIsbn] = useState("")
@@ -31,12 +34,12 @@ export default function AdminPanel({ api }) {
 
 	const handleAddSubmit = async (e) => {
 		e.preventDefault()
-		if (!book.isbn || !book.title || !book.author || !book.category || !book.quantity || !book.description || !book.publisher || !book.price) {
+		if (!book.isbn || !book.name || !book.author || !book.genre || !book.stock || !book.description || !book.publisher || !book.price || !book.pages || !book.year || !book.language) {
 			alert("Please fill in all fields.")
 			return
 		}
-		if (isNaN(book.isbn) || isNaN(book.quantity) || isNaN(book.price)) {
-			alert("ISBN, Quantity, and Price must be numbers.")
+		if (isNaN(book.isbn) || isNaN(book.stock) || isNaN(book.price) || isNaN(book.pages)) {
+			alert("ISBN, Stock, Price, and Pages must be numbers.")
 			return
 		}
 		if (book.isbn.length !== 13) {
@@ -44,21 +47,22 @@ export default function AdminPanel({ api }) {
 			return
 		}
 		try {
-			const response = await axios.post(`${api}/book/save-book`, book, {
-				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-			})
+			const response = await axios.post(`${api}/api/books/saveBook`, book)
 
 			if (response.status === 200) {
 				setBook({
-					isbn: "",
-					title: "",
+					name: "",
 					author: "",
-					category: "",
-					quantity: "",
+					genre: "",
 					description: "",
+					image: "",
+					isbn: "",
 					publisher: "",
+					language: "",
+					year: "",
+					pages: "",
 					price: "",
-					image: ""
+					stock: ""
 				})
 			}
 		} catch (error) {
@@ -77,9 +81,7 @@ export default function AdminPanel({ api }) {
 			return
 		}
 		try {
-			const response = await axios.patch(`${api}/book/update-book/${currentIsbn}`, book, {
-				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-			})
+			const response = await axios.patch(`${api}/api/books/update/${currentIsbn}`, book)
 
 			if (response.status === 200) {
 				alert("Book updated successfully!")
@@ -97,12 +99,8 @@ export default function AdminPanel({ api }) {
 			return
 		}
 		try {
-			const response = await axios.put(
-				`${api}/book/delete-book/${currentIsbn}`,
-				{},
-				{
-					headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-				}
+			const response = await axios.delete(
+				`${api}/api/books/${currentIsbn}`
 			)
 			if (response.status === 200) {
 				alert("Book deleted successfully!")
@@ -140,10 +138,13 @@ export default function AdminPanel({ api }) {
 									<form onSubmit={handleAddSubmit}>
 										{[
 											{ name: "isbn", label: "ISBN", type: "number" },
-											{ name: "title", label: "Title" },
+											{ name: "name", label: "Name" },
 											{ name: "author", label: "Author" },
-											{ name: "category", label: "Category" },
-											{ name: "quantity", label: "Quantity", type: "number" },
+											{ name: "genre", label: "Genre" },
+											{ name: "language", label: "Language" },
+											{ name: "year", label: "Year", type: "date" },
+											{ name: "pages", label: "Pages", type: "number" },
+											{ name: "stock", label: "Stock", type: "number" },
 											{ name: "description", label: "Description", type: "textarea" },
 											{ name: "publisher", label: "Publisher" },
 											{ name: "price", label: "Price", type: "number", step: "0.01" },
@@ -209,10 +210,13 @@ export default function AdminPanel({ api }) {
 										{[
 											{ name: "current_isbn", label: "Current ISBN", type: "number" },
 											{ name: "isbn", label: "ISBN", type: "number" },
-											{ name: "title", label: "Title" },
+											{ name: "name", label: "Name" },
 											{ name: "author", label: "Author" },
-											{ name: "category", label: "Category" },
-											{ name: "quantity", label: "Quantity", type: "number" },
+											{ name: "genre", label: "Genre" },
+											{ name: "language", label: "Language" },
+											{ name: "year", label: "Year", type: "date" },
+											{ name: "pages", label: "Pages", type: "number" },
+											{ name: "stock", label: "Stock", type: "number" },
 											{ name: "description", label: "Description", type: "textarea" },
 											{ name: "publisher", label: "Publisher" },
 											{ name: "price", label: "Price", type: "number", step: "0.01" },

@@ -6,19 +6,13 @@ export default function Orders({ role, api }) {
 
 	const endpoint =
 		role === "ROLE_ADMIN"
-			? `${api}/order/all-orders`
-			: `${api}/order/my-orders`
-
-	const token = localStorage.getItem("token")
+			? `${api}/api/order/admin/getOrders`
+			: `${api}/api/order/getOrders`
 
 	useEffect(() => {
 		const getOrders = async () => {
 			try {
-				const response = await axios.get(endpoint, {
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				})
+				const response = await axios.get(endpoint)
 				if (response.status === 200) {
 					setOrders(response.data)
 					console.log("Orders fetched successfully:", response.data)
@@ -29,18 +23,12 @@ export default function Orders({ role, api }) {
 		}
 
 		getOrders()
-	}, [endpoint, role, token])
+	}, [endpoint, role])
 
 	const handleApprove = async (orderId) => {
 		try {
-			await axios.put(
-				`${api}/order/admin/approve/${orderId}`,
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
+			await axios.patch(
+				`${api}/api/order/admin/approve/${orderId}`
 			)
 			setOrders((prevOrders) => prevOrders.map((order) => (order.orderId === orderId ? { ...order, status: "APPROVED" } : order)))
 		} catch (error) {
@@ -50,16 +38,10 @@ export default function Orders({ role, api }) {
 
 	const handleReject = async (orderId) => {
 		try {
-			await axios.put(
-				`${api}/order/admin/reject/${orderId}`,
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
+			await axios.patch(
+				`${api}/api/order/admin/cancel/${orderId}`
 			)
-			setOrders((prevOrders) => prevOrders.map((order) => (order.orderId === orderId ? { ...order, status: "REJECTED" } : order)))
+			setOrders((prevOrders) => prevOrders.map((order) => (order.orderId === orderId ? { ...order, status: "CANCELLED" } : order)))
 		} catch (error) {
 			console.error(`Error updating status for order ${orderId}:`, error)
 		}

@@ -19,19 +19,21 @@ function AuthPage({ setIsLoggedIn, setRole, api }) {
 
 		try {
 			const response = await axios.post(
-				`${api}/auth/login`,
+				`${api}/api/auth/signin`,
 				{
 					email: loginData.email,
 					password: loginData.password
-				},
-				{}
+				}
 			)
 			if (response.status === 200) {
-				const data = response.data
-				localStorage.setItem("token", data.token)
 				setIsLoggedIn(true)
-				const token = JSON.parse(atob(data.token.split(".")[1]))
-				setRole(token.role)
+				
+				// Fetch user profile to get role
+				const meResponse = await axios.get(`${api}/api/auth/me`)
+				if (meResponse.status === 200) {
+					setRole(meResponse.data.roles[0])
+				}
+				
 				navigate("/")
 			}
 		} catch (err) {
@@ -52,18 +54,24 @@ function AuthPage({ setIsLoggedIn, setRole, api }) {
 		}
 
 		try {
-			const response = await axios.post(`${api}/auth/register`, {
+			const response = await axios.post(`${api}/api/auth/signup`, {
 				username: registerData.username,
 				email: registerData.email,
 				password: registerData.password
 			})
 
 			if (response.status === 200) {
-				const data = response.data
-				localStorage.setItem("token", data.token)
 				setIsLoggedIn(true)
-				const token = JSON.parse(atob(data.token.split(".")[1]))
-				setRole(token.role)
+
+				try {
+					const meResponse = await axios.get(`${api}/api/auth/me`)
+					if (meResponse.status === 200) {
+						setRole(meResponse.data.role)
+					}
+				} catch (meErr) {
+					console.log("Not auto-logged in after signup", meErr)
+				}
+
 				navigate("/")
 			}
 		} catch (err) {
