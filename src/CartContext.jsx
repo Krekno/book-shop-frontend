@@ -12,25 +12,25 @@ export const CartProvider = ({ children, isLoggedIn, cartItems, setCartItems, ap
 		}
 
 		try {
-			await axios.post(`${api}/api/cart/add/${product.isbn}`)
+			await axios.post(`${api}/api/cart/add/${product.id}`)
 		} catch (error) {
 			alert("Error adding to cart")
 			console.error("Error adding to cart:", error)
 		}
 
-		if (cartItems.some((item) => item.isbn === product.isbn)) {
-			setCartItems(cartItems.map((item) => (item.isbn === product.isbn ? { ...item, quantity: item.quantity + 1 } : item)))
+		if (cartItems.some((item) => item.id === product.id)) {
+			setCartItems(cartItems.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)))
 			return
 		}
 
 		setCartItems([...cartItems, { ...product, quantity: 1 }])
 	}
 
-	const removeFromCart = async (isbn) => {
+	const removeFromCart = async (id) => {
 		try {
-			await axios.put(`${api}/api/cart/remove/${isbn}`)
+			await axios.put(`${api}/api/cart/remove/${id}`)
 			setCartItems(
-				cartItems.map((item) => (item.isbn === isbn ? { ...item, quantity: item.quantity - 1 } : item)).filter((item) => item.quantity > 0)
+				cartItems.map((item) => (item.id === id ? { ...item, quantity: item.quantity - 1 } : item)).filter((item) => item.quantity > 0)
 			)
 		} catch (error) {
 			alert("Error removing from cart")

@@ -6,7 +6,7 @@ const ProductListing = ({ books, categories }) => {
 	const [filters, setFilters] = useState({ category: "" })
 	const { addToCart } = useContext(CartContext)
 
-	const filteredBooks = books.filter((book) => (filters.category ? book.category === filters.category : true))
+	const filteredBooks = books.filter((book) => (filters.category ? book.genre === filters.category : true))
 
 	return (
 		<div className="container mt-5">
@@ -68,9 +68,9 @@ const ProductListing = ({ books, categories }) => {
 							<div key={book.isbn} className="col-md-4">
 								<div className="card h-100 shadow-sm">
 									<Link to={`/products/${book.isbn}`} className="text-decoration-none text-dark">
-										<img src={book.image} alt={book.title} className="card-img-top img-fluid" />
+										<img src={book.image} alt={book.name} className="card-img-top img-fluid" />
 										<div className="card-body">
-											<h5 className="card-title">{book.title}</h5> <p className="card-text">₺{book.price}</p>{" "}
+											<h5 className="card-title">{book.name}</h5> <p className="card-text">₺{book.price}</p>{" "}
 										</div>
 									</Link>
 									<div className="card-footer bg-transparent border-top-0">

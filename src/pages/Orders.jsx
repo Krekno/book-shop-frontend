@@ -25,25 +25,25 @@ export default function Orders({ role, api }) {
 		getOrders()
 	}, [endpoint, role])
 
-	const handleApprove = async (orderId) => {
+	const handleApprove = async (id) => {
 		try {
 			await axios.patch(
-				`${api}/api/order/admin/approve/${orderId}`
+				`${api}/api/order/admin/approve/${id}`
 			)
-			setOrders((prevOrders) => prevOrders.map((order) => (order.orderId === orderId ? { ...order, status: "APPROVED" } : order)))
+			setOrders((prevOrders) => prevOrders.map((order) => (order.id === id ? { ...order, status: "APPROVED" } : order)))
 		} catch (error) {
-			console.error(`Error updating status for order ${orderId}:`, error)
+			console.error(`Error updating status for order ${id}:`, error)
 		}
 	}
 
-	const handleReject = async (orderId) => {
+	const handleReject = async (id) => {
 		try {
 			await axios.patch(
-				`${api}/api/order/admin/cancel/${orderId}`
+				`${api}/api/order/admin/cancel/${id}`
 			)
-			setOrders((prevOrders) => prevOrders.map((order) => (order.orderId === orderId ? { ...order, status: "CANCELLED" } : order)))
+			setOrders((prevOrders) => prevOrders.map((order) => (order.id === id ? { ...order, status: "CANCELLED" } : order)))
 		} catch (error) {
-			console.error(`Error updating status for order ${orderId}:`, error)
+			console.error(`Error updating status for order ${id}:`, error)
 		}
 	}
 
@@ -58,36 +58,34 @@ export default function Orders({ role, api }) {
 					{[...orders]
 						.sort((a, b) => (a.status === "PENDING" ? -1 : b.status === "PENDING" ? 1 : 0))
 						.map((order) => (
-							<div className="col-md-6" key={order.orderId}>
+							<div className="col-md-6" key={order.id}>
 								<div className="card h-100">
 									<div className="card-body">
 										<div className="d-flex justify-content-between mb-2">
 											<div>
-												<h5 className="card-title">Order #{order.orderId}</h5>
-												<p className="text-muted small mb-1">Date: {new Date(order.createdAt).toLocaleString()}</p>
-												<p className="text-muted small mb-1">Email: {order.email}</p>
-												<p className="text-muted small mb-1">Username: {order.username}</p>
+												<h5 className="card-title">Order #{order.id}</h5>
+												<p className="text-muted small mb-1">Date: {new Date(order.date).toLocaleString()}</p>
 											</div>
 											<span className="badge bg-secondary align-self-start">{order.status}</span>
 										</div>
 
 										<h6 className="mt-3">Items:</h6>
 										<ul className="list-group list-group-flush mb-3">
-											{order.items.map((item, idx) => (
-												<li key={idx} className="list-group-item px-0 py-1">
-													{item.bookTitle} - {item.quantity} x {item.pricePerUnit} = ₺{item.quantity * item.pricePerUnit}
+											{order.orderItems.map((item) => (
+												<li key={item.id} className="list-group-item px-0 py-1">
+													{item.book.name} - {item.quantity} x ₺{item.price} = ₺{(item.quantity * item.price).toFixed(2)}
 												</li>
 											))}
 										</ul>
-										<p className="fw-bold text-end mb-3">Total: ₺{order.totalPrice.toFixed(2)}</p>
+										<p className="fw-bold text-end mb-3">Total: ₺{order.price.toFixed(2)}</p>
 
 										{/* Admin Buttons */}
 										{role === "ROLE_ADMIN" && order.status === "PENDING" && (
 											<div className="d-flex justify-content-end gap-2">
-												<button className="btn btn-success btn-sm" onClick={() => handleApprove(order.orderId)}>
+												<button className="btn btn-success btn-sm" onClick={() => handleApprove(order.id)}>
 													✅ Approve
 												</button>
-												<button className="btn btn-danger btn-sm" onClick={() => handleReject(order.orderId)}>
+												<button className="btn btn-danger btn-sm" onClick={() => handleReject(order.id)}>
 													❌ Reject
 												</button>
 											</div>

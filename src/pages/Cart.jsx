@@ -32,7 +32,7 @@ const Cart = ({ setCartItems, api }) => {
 				<>
 					<div className="row g-4">
 						{cartItems.map((item) => (
-							<div key={item.isbn} className="col-md-6">
+							<div key={item.id} className="col-md-6">
 								<div className="card h-100 shadow-sm">
 									<div className="row g-0">
 										<div className="col-4">
@@ -44,7 +44,7 @@ const Cart = ({ setCartItems, api }) => {
 												<p className="card-text">
 													₺{item.price} × {item.quantity}
 												</p>
-												<button className="btn btn-outline-danger btn-sm" onClick={() => removeFromCart(item.isbn)}>
+												<button className="btn btn-outline-danger btn-sm" onClick={() => removeFromCart(item.id)}>
 													Remove
 												</button>
 											</div>

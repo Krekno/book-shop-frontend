@@ -54,7 +54,7 @@ function App() {
 				const data = response.data
 				setBooks(data)
 
-				const uniqueCategories = [...new Set(data.map((book) => book.category))]
+				const uniqueCategories = [...new Set(data.map((book) => book.genre))]
 				setCategories(uniqueCategories)
 			} catch (error) {
 				console.error("Error fetching books:", error)
@@ -77,6 +77,7 @@ function App() {
 
 				const data = response.data
 				const books = data.map((item) => ({
+					id: item.book.id,
 					isbn: item.book.isbn,
 					name: item.book.name,
 					price: item.book.price,
